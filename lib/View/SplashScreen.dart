@@ -1,0 +1,111 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'Home.dart';
+import 'SignUp.dart';
+
+var token;
+
+class SplashPage extends StatefulWidget {
+  const SplashPage({Key? key}) : super(key: key);
+
+  @override
+  State<SplashPage> createState() => _SplashPageState();
+}
+
+class _SplashPageState extends State<SplashPage>
+    with SingleTickerProviderStateMixin {
+  AnimationController? controller;
+  @override
+  void initState() {
+    super.initState();
+    controller = AnimationController(
+      vsync: this,
+      lowerBound: 0.8,
+      upperBound: 1.2,
+      duration: const Duration(seconds: 1),
+    );
+
+    controller!.repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    controller!.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SizedBox(height: 10.h),
+          AnimatedBuilder(
+            animation: controller!,
+            child: const Icon(
+              Icons.notifications,
+              size: 35,
+              color: Colors.white,
+            ),
+            builder: (context, widget) => Transform.scale(
+              scale: controller!.value,
+              child: Container(
+                height: 200.h,
+                width: MediaQuery.of(context).size.width,
+                alignment: Alignment.center,
+                child: SvgPicture.asset(
+                  "assets/images/splashlogo.svg",
+                  //fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 20.w, right: 20.w, bottom: 20.h),
+            child: InkWell(
+              onTap: () async {
+                SharedPreferences pref = await SharedPreferences.getInstance();
+                token = pref.getString('token');
+                if (pref.getBool('Logined') == true) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Home(),
+                    ),
+                  );
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SignUpPage(),
+                    ),
+                  );
+                }
+              },
+              child: Container(
+                height: 60.h,
+                width: 600.w,
+                decoration: BoxDecoration(
+                  color: Colors.pink,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Center(
+                  child: Text(
+                    'GET STARTED',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

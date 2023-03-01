@@ -1,0 +1,71 @@
+app icon / CareHome
+day night both selctable
+bahir nikalna a drop sy day night
+current date
+clr chng day night on calendr
+ 
+
+pixel care
+
+booking back black screen ☑
+back exit bottom bar ☑
+
+home ☑
+profile ☑
+application form ☑
+shift nd schedule (bookings) ☑
+downloads ☑
+payout ☑
+setting ☑
+support ☑
+logout ☑
+
+
+profile back arrow not  working ☑
+save forms 
+postal code to post code make it alpha numeric ☑
+gender others ☑
+ethnicity remove krdo phone nmbr krdo purani ko ☑
+
+
+
+position admin add krni ha aik aur application form mn ☑
+
+
+
+conviction description  ☑
+
+
+address screen remove ☑
+
+rgn ☑
+rmn ☑
+k liye ap ny nmc detail page isi page pr bnana a starting form pr bakio k liye nahi ☑
+
+dbs cert nmbr / code nmbr alpha numeric ☑
+
+educational details page change to academic qualification ☑
+
+training=>courses to training, training jo profile mn a wo page dalna a ☑
+
+☑    employement=>previous present nill , salery on leaving notice period post remove krdo , add more emp details button aur dubara present nai select kr skta nah e nill
+
+covid 19 page remove kr k health condition mn dalna a check sy nichy aur save ko next pre krna a ☑ 
+
+bank details page=> company name of bank krna a, account name ,ac nmbr , sort code rkhni hn bs  ☑    
+
+bank details aur health cond k bich aik page ayga refrence page from profile  ☑ 
+
+continue ki jga ana chahiye next prev ☑ 
+
+signature k upr likhna a lock to sign ☑ 
+
+profile mn ayga nmc if rgn rmn 
+
+(backend) training starting date and end date has one valid year after one year expires and generate notification to the staff
+
+(backend) application form and profile linked 
+
+
+
+
