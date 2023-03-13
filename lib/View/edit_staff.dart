@@ -43,14 +43,14 @@ class _EditStaffState extends State<EditStaff> {
   ];
   List staff = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   List shift = [
+    'Day 07:00-19:00',
+    'Night 19:00-07:00',
     '08:00-14:00',
     '08:00-16:00',
     '08:00-18:00',
     '10:00-14:00',
     '10:00-16:00',
     '10:00-18:00',
-    'Day 08:00-20:00',
-    'Night 20:00-08:00'
   ];
   var start = DateTime.now();
   var end = DateTime.now();
@@ -123,7 +123,7 @@ class _EditStaffState extends State<EditStaff> {
                       child: DropdownButtonFormField<String>(
                         value: titleSelected,
                         hint: const Text(
-                          'Enter your position',
+                          'Enter Required Staff Position',
                           style: TextStyle(
                             color: Colors.black,
                           ),
@@ -191,7 +191,7 @@ class _EditStaffState extends State<EditStaff> {
                       child: DropdownButtonFormField<int>(
                         value: staffSelect,
                         hint: const Text(
-                          'No. of staff required',
+                          'No. of Staff Required',
                           style: TextStyle(color: Colors.black),
                         ),
                         validator: (value) {
@@ -255,7 +255,7 @@ class _EditStaffState extends State<EditStaff> {
                       child: DropdownButtonFormField<String>(
                         value: shiftSelected,
                         hint: const Text(
-                          'Enter shift Details',
+                          'Enter Shift Details',
                           style: TextStyle(color: Colors.black),
                         ),
                         validator: (value) {

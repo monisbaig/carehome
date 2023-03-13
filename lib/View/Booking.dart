@@ -77,6 +77,9 @@ class _BookingPageState extends State<BookingPage> {
   var day1 = true;
   var night1 = false;
   bool all1 = false;
+  // instead of above following viable will send in api
+  String shift_id_pass_in_api = '1'; // beucase day is true
+
   @override
   void initState() {
     index = widget.ind ?? 0;
@@ -127,6 +130,7 @@ class _BookingPageState extends State<BookingPage> {
                                 padding: EdgeInsets.all(5.h),
                                 child: const Icon(
                                   Icons.keyboard_arrow_left_rounded,
+                                  size: 30,
                                   color: Colors.white,
                                 ),
                               ),
@@ -410,6 +414,9 @@ class _BookingPageState extends State<BookingPage> {
                                         night = false;
                                         day = val!;
                                         all = false;
+
+                                        // instead of above following variable will send in api
+                                        shift_id_pass_in_api = '1';
                                       }
                                       shift = shift.replaceAll("Night", "Day");
                                     });
@@ -423,6 +430,8 @@ class _BookingPageState extends State<BookingPage> {
                                         day = false;
                                         night = val!;
                                         all = false;
+
+                                        shift_id_pass_in_api = '2';
                                       }
                                       shift = shift.replaceAll("Day", "Night");
                                     });
@@ -435,6 +444,8 @@ class _BookingPageState extends State<BookingPage> {
                                     all = !all;
                                     day = false;
                                     night = false;
+
+                                    shift_id_pass_in_api = '0';
                                   });
                                 },
                                 icon: Icon(
@@ -494,17 +505,27 @@ class _BookingPageState extends State<BookingPage> {
                             lastDay: DateTime.utc(2030, 3, 14),
                             focusedDay: _focusedDay,
                             currentDay: _selectedDay,
-                            rangeSelectionMode: titleSelected == 'Customize'
+                            rangeSelectionMode: titleSelected == 'Customize' ||
+                                    titleSelected == "Daily"
                                 ? RangeSelectionMode.toggledOn
                                 : RangeSelectionMode.toggledOff,
-                            onRangeSelected: (first, second, third) {
-                              setState(() {
-                                start = first!;
-                                end = third;
-                                // print(first);
-                                // print(third);
-                              });
-                            },
+                            onRangeSelected: titleSelected == "Daily"
+                                ? (first, second, third) {
+                                    setState(() {
+                                      start = third;
+                                      end = third;
+                                      // print(first);
+                                      // print(third);
+                                    });
+                                  }
+                                : (first, second, third) {
+                                    setState(() {
+                                      start = first!;
+                                      end = third;
+                                      // print(first);
+                                      // print(third);
+                                    });
+                                  },
                             onDaySelected: (selectedDay, focusedDay) {
                               // print('yes');
                               setState(() {
@@ -548,7 +569,7 @@ class _BookingPageState extends State<BookingPage> {
                                             end: end,
                                             shift: shift,
                                             urls:
-                                                '$baseUrl/api/care-home/care-home-jobs/download/confirmed?position=${pos.indexOf(posSelected)}&shift=${all == true ? 0 : posSelected == 'All' ? 0 : day == true ? "1" : "2"}&start_date=$start&end_date=$end&page=1');
+                                                '$baseUrl/api/care-home/care-home-jobs/download/confirmed?position=${pos.indexOf(posSelected)}&shift=${shift_id_pass_in_api}&start_date=$start&end_date=$end&page=1');
                                       },
                                       child: const Icon(
                                         Icons.save_alt,
@@ -559,7 +580,7 @@ class _BookingPageState extends State<BookingPage> {
                               StreamBuilder<http.Response>(
                                   stream: http.get(
                                       Uri.parse(
-                                        '$baseUrl/api/care-home/care-home-jobs/get/confirmed?position=${pos.indexOf(posSelected)}&shift=${all == true ? 0 : posSelected == 'All' ? 0 : day == true ? "1" : "2"}&start_date=$start&end_date=$end&page=1',
+                                        '$baseUrl/api/care-home/care-home-jobs/get/confirmed?position=${pos.indexOf(posSelected)}&shift=${shift_id_pass_in_api}&start_date=$start&end_date=$end&page=1',
                                       ),
                                       headers: {
                                         'Accept': 'application/json',
@@ -603,6 +624,8 @@ class _BookingPageState extends State<BookingPage> {
                                                                   ),
                                                                   Text(
                                                                       '${jsonDecode(snapshot.data!.body)['data'].elementAt(index)['name']}'),
+                                                                  Text(
+                                                                      '        (${jsonDecode(snapshot.data!.body)['data'].elementAt(index)['shift_name']})'),
                                                                 ],
                                                               ),
                                                             ),
@@ -827,6 +850,9 @@ class _BookingPageState extends State<BookingPage> {
                                         night1 = false;
                                         day1 = val!;
                                         all1 = false;
+
+                                        //  for api
+                                        shift_id_pass_in_api = '1';
                                       }
                                       shift = shift.replaceAll("Night", "Day");
                                     });
@@ -840,7 +866,10 @@ class _BookingPageState extends State<BookingPage> {
                                         day1 = false;
                                         night1 = val!;
                                         all1 = false;
+
+                                        shift_id_pass_in_api = '2';
                                       }
+
                                       shift = shift.replaceAll("Day", "Night");
                                     });
                                   }),
@@ -852,6 +881,8 @@ class _BookingPageState extends State<BookingPage> {
                                     all1 = !all1;
                                     day1 = false;
                                     night1 = false;
+
+                                    shift_id_pass_in_api = '0';
                                   });
                                 },
                                 icon: Icon(
@@ -892,11 +923,12 @@ class _BookingPageState extends State<BookingPage> {
                             rowHeight: 50.h,
                             calendarStyle: CalendarStyle(
                               selectedDecoration: BoxDecoration(
-                                  color: focus1 == 2
-                                      ? Colors.blue.shade300
-                                      : focus1 == 1
-                                          ? Colors.pink.shade300
-                                          : Colors.grey),
+                                color: focus1 == 2
+                                    ? Colors.blue.shade300
+                                    : focus1 == 1
+                                        ? Colors.pink.shade300
+                                        : Colors.grey,
+                              ),
                             ),
                             selectedDayPredicate: (date) {
                               if (date == _focusedDay1) {
@@ -908,17 +940,27 @@ class _BookingPageState extends State<BookingPage> {
                             lastDay: DateTime.utc(2030, 3, 14),
                             focusedDay: _focusedDay1,
                             currentDay: _selectedDay1,
-                            rangeSelectionMode: titleSelected == 'Customize'
+                            rangeSelectionMode: titleSelected1 == 'Customize' ||
+                                    titleSelected1 == "Daily"
                                 ? RangeSelectionMode.toggledOn
                                 : RangeSelectionMode.toggledOff,
-                            onRangeSelected: (first, second, third) {
-                              setState(() {
-                                start1 = first!;
-                                end1 = third;
-                                // print(first);
-                                // print(third);
-                              });
-                            },
+                            onRangeSelected: titleSelected1 == "Daily"
+                                ? (first, second, third) {
+                                    setState(() {
+                                      start1 = third;
+                                      end1 = third;
+                                      // print(first);
+                                      // print(third);
+                                    });
+                                  }
+                                : (first, second, third) {
+                                    setState(() {
+                                      start1 = first!;
+                                      end1 = third;
+                                      // print(first);
+                                      // print(third);
+                                    });
+                                  },
                             onDaySelected: (selectedDay, focusedDay) {
                               // print('yes');
                               setState(() {
@@ -963,7 +1005,9 @@ class _BookingPageState extends State<BookingPage> {
                                             end: end1,
                                             shift: shift1,
                                             urls:
-                                                '$baseUrl/api/care-home/care-home-jobs/download/unconfirmed?position=${pos1.indexOf(pos1Selected)}&shift=${all1 == true ? 0 : pos1Selected == 'All' ? 0 : day1 == true ? "1" : "2"}&start_date=$start&end_date=$end&page=1');
+                                                '$baseUrl/api/care-home/care-home-jobs/download/unconfirmed?position=${pos1.indexOf(pos1Selected)}&shift=${shift_id_pass_in_api}&start_date=${start1.toIso8601String()}&end_date=${end1.toIso8601String()}&page=1'
+                                            // '$baseUrl/api/care-home/care-home-jobs/download/unconfirmed?position=${pos1.indexOf(pos1Selected)}&shift=${all1 == true ? 0 : pos1Selected == 'All' ? 0 : day1 == true ? "1" : "2"}&start_date=${start.toIso8601String()}&end_date=${end.toIso8601String()}&page=1'
+                                            );
                                       },
                                       child: const Icon(
                                         Icons.save_alt,
@@ -974,7 +1018,7 @@ class _BookingPageState extends State<BookingPage> {
                               StreamBuilder<http.Response>(
                                   stream: http.get(
                                       Uri.parse(
-                                        '$baseUrl/api/care-home/care-home-jobs/get/unconfirmed?position=${pos1.indexOf(pos1Selected)}&shift=${all1 == true ? 0 : pos1Selected == 'All' ? 0 : day1 == true ? "1" : "2"}&start_date=$start&end_date=$end&page=1',
+                                        '$baseUrl/api/care-home/care-home-jobs/get/unconfirmed?position=${pos1.indexOf(pos1Selected)}&shift=${shift_id_pass_in_api}&start_date=$start1&end_date=$end1&page=1',
                                       ),
                                       headers: {
                                         'Accept': 'application/json',
@@ -1018,6 +1062,8 @@ class _BookingPageState extends State<BookingPage> {
                                                                   ),
                                                                   Text(
                                                                       '${jsonDecode(snapshot.data!.body)['data'].elementAt(index)['name']}'),
+                                                                  Text(
+                                                                      '        (${jsonDecode(snapshot.data!.body)['data'].elementAt(index)['shift_name']})'),
                                                                 ],
                                                               ),
                                                             ),

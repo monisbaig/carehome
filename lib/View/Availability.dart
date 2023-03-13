@@ -29,9 +29,13 @@ class _AvailabilityState extends State<Availability> {
   var selectedDate = 0;
   var shift = '';
   var week = 0;
+
   var day = true;
   var night = false;
   bool all = false;
+  // instead of above following variable will send in api
+  String shift_id_pass_in_api = '1'; // beucase day is true
+
   var start = DateTime.now();
   var end = DateTime.now();
   var focused = DateTime.now();
@@ -87,6 +91,7 @@ class _AvailabilityState extends State<Availability> {
                             padding: EdgeInsets.all(5.h),
                             child: const Icon(
                               Icons.keyboard_arrow_left_rounded,
+                              size: 30,
                               color: Colors.white,
                             ),
                           ),
@@ -265,6 +270,9 @@ class _AvailabilityState extends State<Availability> {
                               night = false;
                               day = val!;
                               all = false;
+
+                              // instead of above following variable will send in api
+                              shift_id_pass_in_api = '1';
                             }
                             shift = shift.replaceAll("Night", "Day");
                           });
@@ -278,6 +286,9 @@ class _AvailabilityState extends State<Availability> {
                               day = false;
                               night = val!;
                               all = false;
+
+                              // instead of above following variable will send in api
+                              shift_id_pass_in_api = '2';
                             }
                             shift = shift.replaceAll("Day", "Night");
                           });
@@ -290,6 +301,9 @@ class _AvailabilityState extends State<Availability> {
                           all = !all;
                           day = false;
                           night = false;
+
+                          // instead of above following variable will send in api
+                          shift_id_pass_in_api = '0';
                         });
                       },
                       icon: Icon(
@@ -321,15 +335,17 @@ class _AvailabilityState extends State<Availability> {
                   startingDayOfWeek: StartingDayOfWeek.monday,
                   rangeStartDay: start,
                   rangeEndDay: end,
+                  headerStyle: const HeaderStyle(formatButtonVisible: false),
                   firstDay: DateTime.utc(2010, 10, 16),
                   rowHeight: 50.h,
                   calendarStyle: CalendarStyle(
                     selectedDecoration: BoxDecoration(
-                        color: focus == 2
-                            ? Colors.blue.shade300
-                            : focus == 1
-                                ? Colors.pink.shade300
-                                : Colors.grey),
+                      color: focus == 2
+                          ? Colors.blue.shade300
+                          : focus == 1
+                              ? Colors.pink.shade300
+                              : Colors.grey,
+                    ),
                   ),
                   selectedDayPredicate: (date) {
                     if (date == _focusedDay) {
@@ -341,19 +357,27 @@ class _AvailabilityState extends State<Availability> {
                   lastDay: DateTime.utc(2030, 3, 14),
                   focusedDay: _focusedDay,
                   currentDay: _selectedDay,
-                  weekNumbersVisible: false,
-                  headerStyle: const HeaderStyle(formatButtonVisible: false),
-                  rangeSelectionMode: titleSelected == 'Customize'
-                      ? RangeSelectionMode.toggledOn
-                      : RangeSelectionMode.toggledOff,
-                  onRangeSelected: (first, second, third) {
-                    setState(() {
-                      start = first!;
-                      end = third;
-                      // print(first);
-                      // print(third);
-                    });
-                  },
+                  rangeSelectionMode:
+                      titleSelected == 'Customize' || titleSelected == "Daily"
+                          ? RangeSelectionMode.toggledOn
+                          : RangeSelectionMode.toggledOff,
+                  onRangeSelected: titleSelected == "Daily"
+                      ? (first, second, third) {
+                          setState(() {
+                            start = third;
+                            end = third;
+                            // print(first);
+                            // print(third);
+                          });
+                        }
+                      : (first, second, third) {
+                          setState(() {
+                            start = first!;
+                            end = third;
+                            // print(first);
+                            // print(third);
+                          });
+                        },
                   onDaySelected: (selectedDay, focusedDay) {
                     // print('yes');
                     setState(() {
@@ -399,8 +423,8 @@ class _AvailabilityState extends State<Availability> {
                     SizedBox(height: 10.h),
                     StreamBuilder<http.Response>(
                       stream: http.get(
-                          Uri.parse(
-                              '$baseUrl/api/care-home/available-staff/get?position=${pos.indexOf(posSelected)}&shift=${all == true ? 0 : posSelected == 'All' ? 0 : day == true ? "1" : "2"}&start_date=${start.day}-${start.month}-${start.year}&end_date=${end.day}-${end.month}-${end.year}'),
+                          // Uri.parse('$baseUrl/api/care-home/available-staff/get?position=${pos.indexOf(posSelected)}&shift=${all == true ? 0 : posSelected == 'All' ? 0 : day == true ? "1" : "2"}&start_date=${start.day}-${start.month}-${start.year}&end_date=${end.day}-${end.month}-${end.year}'),
+                          Uri.parse('$baseUrl/api/care-home/available-staff/get?position=${pos.indexOf(posSelected)}&shift=${all == true ? 0 : posSelected == '' ? 0 : day == true ? "1" : "2"}&start_date=${start.toIso8601String()}&end_date=${end.toIso8601String()}'),
                           headers: {
                             'Accept': 'application/json',
                             'Authorization': 'Bearer $token'
@@ -443,6 +467,8 @@ class _AvailabilityState extends State<Availability> {
                                                               ),
                                                               Text(
                                                                   '${jsonDecode(snapshot.data!.body)['data'].elementAt(index)['name']}'),
+                                                              Text(
+                                                                  '        (${jsonDecode(snapshot.data!.body)['data'].elementAt(index)['shift_name']})'),
                                                             ],
                                                           ),
                                                           GestureDetector(
@@ -518,10 +544,10 @@ class _AvailabilityState extends State<Availability> {
                                                             child: Container(
                                                               decoration: BoxDecoration(
                                                                   color: jsonDecode(snapshot.data!.body)['data'].elementAt(index)["button"]["text"].contains("Assigned")
-                                                                      ? Colors.grey
+                                                                      ? Colors.blue
                                                                       : jsonDecode(snapshot.data!.body)['data'].elementAt(index)["button"]["text"].contains("Rejected")
                                                                           ? Colors.red
-                                                                          : Colors.blue,
+                                                                          : Colors.pink,
                                                                   borderRadius: BorderRadius.circular(8.r)),
                                                               padding:
                                                                   const EdgeInsets
@@ -687,6 +713,7 @@ class _AvailabilityState extends State<Availability> {
   }
 
   Future<File?> downloadPDF({shift, start, end}) async {
+    // print("hassan1");
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -700,12 +727,16 @@ class _AvailabilityState extends State<Availability> {
     );
     Dio dioClient = Dio();
     final url = Uri.parse(
-        '$baseUrl/api/care-home/available-staff/download?position=${pos.indexOf(posSelected) + 1}&shift=${day == true ? "1" : "2"}&start_date=${start.day}-${start.month}-${start.year}&end_date=${end.day}-${end.month}-${end.year}');
+        '$baseUrl/api/care-home/available-staff/download?position=${pos.indexOf(posSelected)}&shift=${all == true ? 0 : posSelected == '' ? 0 : day == true ? "1" : "2"}&start_date=${start.toIso8601String()}&end_date=${end.toIso8601String()}');
+    print(
+        '$baseUrl/api/care-home/available-staff/download?position=${pos.indexOf(posSelected)}&shift=${all == true ? 0 : posSelected == '' ? 0 : day == true ? "1" : "2"}&start_date=${start.toIso8601String()}&end_date=${end.toIso8601String()}');
+    // final url = Uri.parse('$baseUrl/api/care-home/available-staff/download?position=${pos.indexOf(posSelected) + 1}&shift=${day == true ? "1" : "2"}&start_date=${start.day}-${start.month}-${start.year}&end_date=${end.day}-${end.month}-${end.year}');
     final headers = {
       "Authorization": "Bearer $token",
     };
     final response = await http.get(url, headers: headers);
     Navigator.pop(context);
+
     if (response.statusCode == 200) {
       final Directory? appDir = Platform.isAndroid
           ? await getExternalStorageDirectory()
@@ -717,7 +748,7 @@ class _AvailabilityState extends State<Availability> {
         await file.create();
       }
       var files = await file.writeAsBytes(response.bodyBytes);
-      print('');
+      print(files.path);
       files.exists() == false
           ? ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
@@ -730,7 +761,8 @@ class _AvailabilityState extends State<Availability> {
                 builder: (_) => PDFScreen(
                   path: files.path,
                   url:
-                      '$baseUrl/api/care-home/available-staff/download?position=${pos.indexOf(posSelected)}&shift=${day == true ? "1" : "2"}&start_date=${start.day}-${start.month}-${start.year}&end_date=${end.day}-${end.month}-${end.year}',
+                      '$baseUrl/api/care-home/available-staff/download?position=${pos.indexOf(posSelected) + 1}&shift=${all == true ? 0 : posSelected == '' ? 0 : day == true ? "1" : "2"}&start_date=${start.toIso8601String()}&end_date=${end.toIso8601String()}',
+                  // '$baseUrl/api/care-home/available-staff/download?position=${pos.indexOf(posSelected)}&shift=${day == true ? "1" : "2"}&start_date=${start.day}-${start.month}-${start.year}&end_date=${end.day}-${end.month}-${end.year}',
                 ),
               ),
             );

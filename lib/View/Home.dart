@@ -130,7 +130,7 @@ class _HomeState extends State<Home> {
                           const Text(
                             'Show All',
                             style: TextStyle(
-                              color: Colors.grey,
+                              color: Colors.pink,
                             ),
                           ),
                           SizedBox(height: 10.h)
@@ -467,7 +467,7 @@ class _HomeState extends State<Home> {
                           const Text(
                             'Show All',
                             style: TextStyle(
-                              color: Colors.grey,
+                              color: Colors.pink,
                             ),
                           ),
                           SizedBox(height: 10.h)

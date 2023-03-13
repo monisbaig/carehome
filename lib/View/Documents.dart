@@ -68,6 +68,7 @@ class _DocumentsState extends State<Documents> {
                             padding: EdgeInsets.all(5.h),
                             child: const Icon(
                               Icons.keyboard_arrow_left_rounded,
+                              size: 30,
                               color: Colors.white,
                             ),
                           ),
@@ -156,7 +157,7 @@ class _DocumentsState extends State<Documents> {
                   child: TextFormField(
                     onChanged: (val) {
                       setState(() {
-                        search = val;
+                        search = val.toLowerCase();
                       });
                     },
                     decoration: InputDecoration(
@@ -207,12 +208,13 @@ class _DocumentsState extends State<Documents> {
               StreamBuilder<http.Response>(
                   stream: http.get(
                       Uri.parse(
-                          '$baseUrl/api/care-home/document/get?position=$titleSelected&name&page=1'),
+                          '$baseUrl/api/care-home/document/get?position=${title.indexOf(titleSelected) + 1}&name&page=1'),
                       headers: {
                         'Accept': 'application/json',
                         'Authorization': 'Bearer $token'
                       }).asStream(),
                   builder: (context, snapshot) {
+                    print(snapshot.data?.request?.url);
                     if (snapshot.hasData) {
                       if (snapshot.data!.statusCode == 200) {
                         if (jsonDecode(snapshot.data!.body)['status'] == 200) {
@@ -222,6 +224,8 @@ class _DocumentsState extends State<Documents> {
                               jsonDecode(snapshot.data!.body)['data'].length,
                               (index) => jsonDecode(snapshot.data!.body)['data']
                                       .elementAt(index)['name']
+                                      .toString()
+                                      .toLowerCase()
                                       .contains(search)
                                   ? Container(
                                       height: 50.h,
@@ -326,7 +330,10 @@ class _DocumentsState extends State<Documents> {
     );
     Dio dioClient = Dio();
     final url = Uri.parse(
-        '$baseUrl/api/care-home/document/download?position=$position&name=$name&user_id=$id');
+        '$baseUrl/api/care-home/document/download?position=${title.indexOf(titleSelected) + 1}&name=$name&user_id=$id');
+
+    print(
+        '$baseUrl/api/care-home/document/download?position=${title.indexOf(titleSelected) + 1}&name=$name&user_id=$id');
     final headers = {
       "Authorization": "Bearer $token",
     };
@@ -348,7 +355,7 @@ class _DocumentsState extends State<Documents> {
           builder: (_) => PDFScreen(
                 path: files.path,
                 url:
-                    '$baseUrl/api/care-home/document/download?position=$position&name=$name&user_id=$id',
+                    '$baseUrl/api/care-home/document/download?position=${title.indexOf(titleSelected) + 1}&name=$name&user_id=$id',
               )));
     }
   }

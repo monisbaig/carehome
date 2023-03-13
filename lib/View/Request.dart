@@ -34,14 +34,16 @@ class _RequestState extends State<Request> {
   dynamic shiftSelected;
   List staff = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   List shift = [
+    'Day 07:00-19:00',
+    'Night 19:00-07:00',
+    'Day 08:00-20:00',
+    'Night 20:00-08:00',
     '08:00-14:00',
     '08:00-16:00',
     '08:00-18:00',
     '10:00-14:00',
     '10:00-16:00',
     '10:00-18:00',
-    'Day 08:00-20:00',
-    'Night 20:00-08:00',
   ];
   var start = DateTime.now();
   var end = DateTime.now();
@@ -58,9 +60,10 @@ class _RequestState extends State<Request> {
     'Kitchen Assistant',
     'Chef'
   ];
-  var posSelected = 'Registered Nurse (RGN)';
+  // var posSelected = 'Registered Nurse (RGN)';
 
   final formKey = GlobalKey<FormState>();
+  final scrollKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -105,6 +108,7 @@ class _RequestState extends State<Request> {
                                 padding: EdgeInsets.all(5.h),
                                 child: const Icon(
                                   Icons.keyboard_arrow_left_rounded,
+                                  size: 30,
                                   color: Colors.white,
                                 ),
                               ),
@@ -135,7 +139,7 @@ class _RequestState extends State<Request> {
                       child: DropdownButtonFormField<String>(
                         value: titleSelected,
                         hint: const Text(
-                          'Enter your position',
+                          'Enter Required Staff Position',
                           style: TextStyle(color: Colors.black),
                         ),
                         validator: (value) {
@@ -151,7 +155,9 @@ class _RequestState extends State<Request> {
                                 ))
                             .toList(),
                         onChanged: (String? value) {
-                          titleSelected = value!;
+                          setState(() {
+                            titleSelected = value!;
+                          });
                         },
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.symmetric(
@@ -204,7 +210,7 @@ class _RequestState extends State<Request> {
                           return null;
                         },
                         hint: const Text(
-                          'No. of staff required',
+                          'No. of Staff Required',
                           style: TextStyle(color: Colors.black),
                         ),
                         items: staff
@@ -214,7 +220,9 @@ class _RequestState extends State<Request> {
                                 ))
                             .toList(),
                         onChanged: (var value) {
-                          staffSelect = value!;
+                          setState(() {
+                            staffSelect = value!;
+                          });
                         },
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.symmetric(
@@ -261,7 +269,7 @@ class _RequestState extends State<Request> {
                       child: DropdownButtonFormField<String>(
                         value: shiftSelected,
                         hint: const Text(
-                          'Shift Details',
+                          'Enter Shift Details',
                           style: TextStyle(color: Colors.black),
                         ),
                         validator: (value) {
@@ -277,7 +285,9 @@ class _RequestState extends State<Request> {
                                 ))
                             .toList(),
                         onChanged: (String? value) {
-                          shiftSelected = value!;
+                          setState(() {
+                            shiftSelected = value!;
+                          });
                         },
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.symmetric(
@@ -478,13 +488,14 @@ class _RequestState extends State<Request> {
                         SizedBox(height: 10.h),
                         StreamBuilder<http.Response>(
                           stream: http.get(
-                              Uri.parse(
-                                  '$baseUrl/api/care-home/request-staff/get?position=${pos.indexOf(posSelected) + 1}&shift_detail=${day == true ? "1" : "2"}&start_date=${start.day}-${start.month}-${start.year}&end_date=${end.day}-${end.month}-${end.year}'),
+                              // Uri.parse('$baseUrl/api/care-home/request-staff/get?position=${pos.indexOf(titleSelected) + 1}&number_of_staff=$staffSelect&shift_detail=${shift.indexOf(shiftSelected) + 1}&start_date=${start.day}-${start.month}-${start.year}&end_date=${end.day}-${end.month}-${end.year}'),
+                              Uri.parse('$baseUrl/api/care-home/request-staff/get'),
                               headers: {
                                 'Accept': 'application/json',
                                 'Authorization': 'Bearer $token'
                               }).asStream(),
                           builder: (context, snapshot) {
+                            // print('$baseUrl/api/care-home/request-staff/get?position=${pos.indexOf(titleSelected) + 1}&shift_detail=${shift}&start_date=${start.day}-${start.month}-${start.year}&end_date=${end.day}-${end.month}-${end.year}');
                             // print(snapshot.data?.request?.url);
                             if (snapshot.hasData) {
                               if (snapshot.data!.statusCode == 200) {
@@ -839,7 +850,7 @@ class _RequestState extends State<Request> {
                                                 ),
                                               ),
                                       ),
-                                    ).reversed.toList(),
+                                    ).toList(),
                                   );
                                 } else {
                                   return const SizedBox(
