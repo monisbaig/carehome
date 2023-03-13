@@ -542,12 +542,16 @@ class _AvailabilityState extends State<Availability> {
                                                               }
                                                             },
                                                             child: Container(
+                                                              width: 85.w,
+                                                              alignment:
+                                                                  Alignment
+                                                                      .center,
                                                               decoration: BoxDecoration(
                                                                   color: jsonDecode(snapshot.data!.body)['data'].elementAt(index)["button"]["text"].contains("Assigned")
                                                                       ? Colors.blue
                                                                       : jsonDecode(snapshot.data!.body)['data'].elementAt(index)["button"]["text"].contains("Rejected")
-                                                                          ? Colors.red
-                                                                          : Colors.pink,
+                                                                          ? Colors.pink
+                                                                          : Colors.green,
                                                                   borderRadius: BorderRadius.circular(8.r)),
                                                               padding:
                                                                   const EdgeInsets

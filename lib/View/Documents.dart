@@ -262,13 +262,14 @@ class _DocumentsState extends State<Documents> {
                                           GestureDetector(
                                             onTap: () async {
                                               downloadPDF(
-                                                  id: jsonDecode(snapshot
-                                                          .data!.body)['data']
-                                                      .elementAt(index)['id'],
-                                                  name: jsonDecode(snapshot
-                                                          .data!.body)['data']
-                                                      .elementAt(index)['name'],
-                                                  position: titleSelected);
+                                                id: jsonDecode(snapshot
+                                                        .data!.body)['data']
+                                                    .elementAt(index)['id'],
+                                                name: jsonDecode(snapshot
+                                                        .data!.body)['data']
+                                                    .elementAt(index)['name'],
+                                                position: titleSelected,
+                                              );
                                             },
                                             child: const Icon(
                                               Icons.save_alt,
@@ -306,7 +307,7 @@ class _DocumentsState extends State<Documents> {
                         ),
                       );
                     }
-                  })
+                  }),
             ],
           ),
         ),
