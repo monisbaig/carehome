@@ -214,15 +214,15 @@ class _SignUpPageState extends State<SignUpPage> {
                         ),
                       ),
                       SizedBox(width: 18.w),
-                      Container(
-                        child: Text(
-                          'Forgot Password?',
-                          style: TextStyle(
-                            color: const Color(0xff3b53a4),
-                            fontSize: 17.sp,
-                          ),
-                        ),
-                      ),
+                      // Container(
+                      //   child: Text(
+                      //     'Forgot Password?',
+                      //     style: TextStyle(
+                      //       color: const Color(0xff3b53a4),
+                      //       fontSize: 17.sp,
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ],

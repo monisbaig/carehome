@@ -1,10 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.stackbuffer.carehome">
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application
-        android:label="Care Home"
+        android:label="Pixel Home"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <provider
